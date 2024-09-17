@@ -1,4 +1,15 @@
+using Microsoft.Data.Sqlite;
+
 var builder = WebApplication.CreateBuilder(args);
+
+var connection = new SqliteConnection("Data Source=db.db");
+connection.Open();
+
+var command = connection.CreateCommand();
+command.CommandText = @"
+        
+    ";
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

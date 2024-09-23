@@ -1,16 +1,15 @@
-using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
+
+using Oblig1.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connection = new SqliteConnection("Data Source=db.db");
-connection.Open();
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-var command = connection.CreateCommand();
-command.CommandText = @"
-        
-    ";
-
-
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddScoped<IBlogRepository, BlogRepository>();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 

@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@{
+    var isAuthenticated = User?.Identity?.IsAuthenticated ?? false;
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -25,13 +30,15 @@
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        @if (!User.Identity.IsAuthenticated) {
-                            <li class="nav-item">
-                                <a class="nav-link text-light" asp-controller="#" asp-action="#">Logout</a>
-                            </li>
+                        @if (isAuthenticated) {
+                            <form asp-controller="Account" asp-action="Logout" method="post" style="display:inline;">
+                                <button type="submit" class="nav-link text-light" style="border: none; background: none; cursor: pointer;">
+                                    Logout
+                                </button>
+                            </form>
                         } else {
                             <li class="nav-item">
-                                <a class="nav-link text-light" asp-controller="Account" asp-action="#">Login</a>
+                                <a class="nav-link text-light" asp-controller="Account" asp-action="Login">Login</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-light" asp-controller="Account" asp-action="Register">Register</a>

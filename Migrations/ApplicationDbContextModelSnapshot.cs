@@ -3,7 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Oblig1.Data;
+using oblig1.Data;
 
 #nullable disable
 
@@ -255,6 +255,7 @@ namespace oblig1.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("ProfilePicture")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SecurityStamp")

@@ -1,6 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<User> UserManager
 @{
     var isAuthenticated = User?.Identity?.IsAuthenticated ?? false;
+    var user = await UserManager.GetUserAsync(User);
+    var pfp = user.ProfilePicture ?? "Default_pfp.jpg";
 }
 
 <!DOCTYPE html>
@@ -47,6 +50,12 @@
                     </ul>
                 </div>
             </div>
+            @if (isAuthenticated) {
+                <div class="nav-profile">
+                    <a>@User?.Identity?.Name</a>
+                    <img src="/uploads/@pfp" alt="Profile Picture" width="50" height="50" >
+                </div>
+            }
         </nav>
     </header>
     <div class="container">

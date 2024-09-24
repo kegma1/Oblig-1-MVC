@@ -1,9 +1,6 @@
-public class User {
-    public int Id { get; set; }   
-   
-    public string Username { get; set; } = ""; 
+using Microsoft.AspNetCore.Identity;
 
-    public string Password { get; set; } = "";           
+public class User : IdentityUser {        
     public string Bio { get; set; } = "";                 
     public string? ProfilePicture { get; set; }       
     public bool IsAdmin { get; set; }                

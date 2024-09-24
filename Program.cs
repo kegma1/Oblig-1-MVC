@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-using Oblig1.Data;
+using oblig1.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 

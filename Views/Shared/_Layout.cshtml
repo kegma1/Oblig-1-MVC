@@ -3,7 +3,10 @@
 @{
     var isAuthenticated = User?.Identity?.IsAuthenticated ?? false;
     var user = await UserManager.GetUserAsync(User);
-    var pfp = user.ProfilePicture ?? "Default_pfp.jpg";
+    var pfp = user?.ProfilePicture ?? "Default_pfp.jpg";
+    if (pfp == "") {
+        pfp = "Default_pfp.jpg";
+    }
 }
 
 <!DOCTYPE html>

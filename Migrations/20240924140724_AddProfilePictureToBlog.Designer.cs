@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using oblig1.Data;
 
@@ -10,9 +11,10 @@ using oblig1.Data;
 namespace oblig1.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240924140724_AddProfilePictureToBlog")]
+    partial class AddProfilePictureToBlog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.33");
@@ -26,14 +28,14 @@ namespace oblig1.Migrations
                     b.Property<string>("AuthorId")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("ProfilePicture")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("desctiption")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -365,7 +367,7 @@ namespace oblig1.Migrations
                         .HasForeignKey("AuthorId");
 
                     b.HasOne("Blog", null)
-                        .WithMany("Posts")
+                        .WithMany("posts")
                         .HasForeignKey("BlogId");
 
                     b.Navigation("Author");
@@ -388,7 +390,7 @@ namespace oblig1.Migrations
 
             modelBuilder.Entity("Blog", b =>
                 {
-                    b.Navigation("Posts");
+                    b.Navigation("posts");
                 });
 
             modelBuilder.Entity("User", b =>

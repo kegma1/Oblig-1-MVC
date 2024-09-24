@@ -21,6 +21,20 @@ public class BlogController : Controller
         return View(new MakeBlogViewModel());
     }
 
+    [HttpGet]
+    public IActionResult ViewBlog(int id)
+    {
+        var blog = _blogRepository.GetBlogById(id);
+    
+        if (blog == null)
+        {
+            return NotFound(); 
+        }
+
+        return View(blog);
+    }
+
+
     [HttpPost]
     public async Task<IActionResult> CreateBlog(MakeBlogViewModel model)
     {
@@ -37,7 +51,7 @@ public class BlogController : Controller
                 {
                     await model.ProfilePicture.CopyToAsync(stream);
                 }
-                profilePicturePath = "/uploads/" + profilePicFileName; 
+                profilePicturePath = "/uploads/" + profilePicFileName;
             }
 
             // Handling image uploads
@@ -60,9 +74,10 @@ public class BlogController : Controller
             var blog = new Blog
             {
                 Title = model.Title,
-                desctiption = model.Description,
+                Description = model.Description,
                 Author = user,
-                posts = new List<Post>(),
+                ProfilePicture = profilePicturePath, // Store the profile picture path
+                Posts = new List<Post>(),
             };
 
             _blogRepository.AddBlog(blog);

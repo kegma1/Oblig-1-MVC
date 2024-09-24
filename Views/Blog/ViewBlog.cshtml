@@ -1,0 +1,26 @@
+@model Blog
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                @if (!string.IsNullOrEmpty(Model.ProfilePicture))
+                {
+                    <img src="@Model.ProfilePicture" class="card-img-top" alt="Blog Image">
+                }
+                <div class="card-body">
+                    <h1 class="card-title">@Model.Title</h1>
+                    <p class="card-text">@Model.Description</p>
+                </div>
+                <div class="card-footer">
+                    <p class="text-muted">Author: @Model.Author?.UserName</p>
+                    <p class="text-muted">Posts: @Model.Posts?.Count ?? 0</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

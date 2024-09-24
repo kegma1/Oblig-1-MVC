@@ -2,22 +2,32 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using oblig1.Models;
+using oblig1.Data;
 
 namespace oblig1.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IBlogRepository _blogRepository;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IBlogRepository blogRepository)
         {
             _logger = logger;
+            _blogRepository = blogRepository;
         }
 
         [Authorize]
         public IActionResult Index()
         {
-            return View();
+            var blogs = _blogRepository.GetAllBlogs();
+            
+            var viewModel = new IndexViewModel
+            {
+                Blogs = blogs
+            };
+            
+            return View(viewModel);
         }
 
         [HttpPost]
@@ -25,6 +35,7 @@ namespace oblig1.Controllers
         {
             return RedirectToAction("NewHome");
         }
+
         public IActionResult NoDbLogin()
         {
             return RedirectToAction("NewHome");

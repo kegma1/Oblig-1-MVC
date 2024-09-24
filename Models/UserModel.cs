@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 
 public class User : IdentityUser {        
     public string Bio { get; set; } = "";                 
-    public string? ProfilePicture { get; set; }       
+    public string ProfilePicture { get; set; } = "Default_pfp.jpg";      
     public bool IsAdmin { get; set; }                
     public bool IsDeleted { get; set; }              
 

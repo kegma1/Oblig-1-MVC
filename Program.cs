@@ -33,6 +33,10 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.MapControllerRoute(
+    name: "blog",
+    pattern: "{controller=Blog}/{action=MakeBlog}/{id?}");
+
 app.UseAuthentication();
 app.UseAuthorization();
 

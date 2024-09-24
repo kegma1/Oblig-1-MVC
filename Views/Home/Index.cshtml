@@ -2,25 +2,38 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-8">
+<div class="container-fluid">
+    <div class="row" style="min-height: calc(100vh - 150px);"> 
+        <div class="col-md-1 d-flex justify-content-start" style="border-right: 2px solid #ccc; padding-top: 20px;">
+            <div class="vertical-text text-start">
+                <span>Ads</span><br />
+                <span>will</span><br />
+                <span>come</span><br />
+                <span>here</span>
+            </div>
+        </div>
+
+        <div class="col-md-10" style="padding-left: 50px;">
             <h2>Blogs</h2>
             <p>No blogs yet</p>
         </div>
-    
-        <div class="col-md-4">
-            <div class="d-flex flex-column align-items-end">
-                <button class="btn btn-primary mb-2">New Blog</button>
-                <button class="btn btn-secondary mb-2">Saved Blogs</button>
-                <button class="btn btn-info mb-2">My Blogs</button>
-            </div>
+
+        <div class="col-md-1 d-flex flex-column justify-content-start" style="border-left: 2px solid #ccc; padding-top: 20px;">
+            <button class="btn btn-primary mb-2" onclick="window.location.href='@Url.Action("MakeBlog", "Blog")'">New Blog</button>
+            <button class="btn btn-secondary mb-2">Saved Blogs</button>
+            <button class="btn btn-info mb-2">My Blogs</button>
         </div>
     </div>
 </div>
 
 <style>
+    .vertical-text {
+        letter-spacing: 2px;
+        font-size: 18px;
+        font-weight: bold;
+    }
     .btn {
         width: 150px;
+        margin-top: 20px;
     }
 </style>

@@ -1,4 +1,4 @@
-using Oblig1.Data; 
+using oblig1.Data; 
 using oblig1.Models;  
 using System.Collections.Generic;
 using System.Linq;

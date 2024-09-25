@@ -1,7 +1,9 @@
 @model PublicProfileViewModel
-
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<User> UserManager
 @{
     ViewData["Title"] = Model.Username;
+    var user = await UserManager.GetUserAsync(User);
 }
 
 
@@ -64,6 +66,15 @@
                 <a>Following: @Model.FollowingCount</a>
                 <a>Followers: @Model.FollowerCount</a>
             </div>
+            @if (Model.Username == User?.Identity?.Name) {
+                <button>Edit profile</button>
+            } else {
+                @if (true) {
+                    <button>Follow</button>
+                } else {
+                    <button>Unfollow</button>
+                }
+            }
             <hr/>
             <p>@Model.bio</p>
         </div>

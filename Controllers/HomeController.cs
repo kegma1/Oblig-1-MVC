@@ -17,7 +17,6 @@ namespace oblig1.Controllers
             _blogRepository = blogRepository;
         }
 
-        [Authorize]
         public IActionResult Index()
         {
             var blogs = _blogRepository.GetAllBlogs();

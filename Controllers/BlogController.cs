@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity; 
 using Microsoft.AspNetCore.Mvc;
 using oblig1.Data; 
@@ -15,6 +16,7 @@ public class BlogController : Controller
         _userManager = userManager;
     }
 
+    [Authorize]
     [HttpGet]
     public IActionResult MakeBlog()
     {
@@ -34,7 +36,7 @@ public class BlogController : Controller
         return View(blog);
     }
 
-
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> CreateBlog(MakeBlogViewModel model)
     {

@@ -7,11 +7,13 @@ namespace oblig1.Controllers
     public class AccountController : Controller {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly IBlogRepository _blogRepository;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IBlogRepository blogRepository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _blogRepository = blogRepository;
         }
 
         [HttpGet]
@@ -70,6 +72,29 @@ namespace oblig1.Controllers
         public async Task<IActionResult> Logout() {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> PublicProfile(string userId) {
+
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null) {
+                return NotFound("User not found");
+            }
+
+            var profileViewModel = new PublicProfileViewModel {
+                Username = user.UserName,
+                bio = user.Bio,
+                ProfilePictureUrl = user.ProfilePicture,
+
+                FollowerCount = user.Followers.Count,
+                FollowingCount = user.Following.Count,
+
+                Blogs = _blogRepository.GetAllBlogsByAuthor(userId)
+            };
+
+            return View(profileViewModel);
         }
     }
 }

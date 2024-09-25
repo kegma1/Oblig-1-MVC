@@ -54,10 +54,12 @@
                 </div>
             </div>
             @if (isAuthenticated) {
-                <div class="nav-profile">
-                    <a>@User?.Identity?.Name</a>
-                    <img src="/uploads/@pfp" alt="Profile Picture" width="50" height="50" >
-                </div>
+                <a  href="@Url.Action("PublicProfile", "Account", new { userId = user?.Id })">
+                    <div class="nav-profile">
+                        <p>@User?.Identity?.Name</p>
+                        <img src="/uploads/@pfp" alt="Profile Picture" width="50" height="50" >
+                    </div>
+                </a>
             }
         </nav>
     </header>

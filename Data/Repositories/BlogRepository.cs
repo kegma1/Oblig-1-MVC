@@ -43,4 +43,8 @@ public class BlogRepository : IBlogRepository
         _context.Blogs.Update(blog);
         _context.SaveChanges();
     }
+
+    public IEnumerable<Blog> GetAllBlogsByAuthor(string authorId) {
+        return _context.Blogs.Where(b => b.Author.Id == authorId).ToList();
+    }
 }

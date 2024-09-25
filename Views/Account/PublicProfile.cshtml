@@ -1,0 +1,117 @@
+@model PublicProfileViewModel
+
+@{
+    ViewData["Title"] = Model.Username;
+}
+
+
+<div class="container-fluid">
+    <div class="row" style="min-height: calc(100vh - 150px);">
+        <!-- Left margin (Ads section) -->
+        <div class="col-md-1 d-flex justify-content-start" style="border-right: 2px solid #ccc; padding-top: 20px;">
+            <div class="vertical-text text-start">
+                <span>Ads</span><br />
+                <span>will</span><br />
+                <span>come</span><br />
+                <span>here</span>
+            </div>
+        </div>
+
+        <!-- Blog posts section -->
+        <div class="col-md-10" style="padding-left: 50px;">
+            <h2>Blogs</h2>
+
+            <!-- Blog container -->
+            <div class="scrollable-blog-list" style="max-height: 80vh; overflow-y: auto; padding-right: 20px;">
+                @if (Model.Blogs != null && Model.Blogs.Any())
+                {
+                    <div class="row row-cols-1 row-cols-md-2 g-4">
+                        @foreach (var blog in Model.Blogs)
+                        {
+                            <div class="col">
+                                <!-- Make the entire card clickable -->
+                                <a href="@Url.Action("ViewBlog", "Blog", new { id = blog.Id })" class="card-link">
+                                    <div class="card h-100">
+                                        @if (!string.IsNullOrEmpty(blog.ProfilePicture))
+                                        {
+                                            <img src="@blog.ProfilePicture" class="card-img-top" alt="Blog Image">
+                                        }
+                                        <div class="card-body">
+                                            <h5 class="card-title">@blog.Title</h5>
+                                            <p class="card-text">@blog.Description</p> <!-- Updated to correct property -->
+                                        </div>
+                                        <div class="card-footer">
+                                            <small class="text-muted">Author: @blog.Author?.UserName</small>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p>No blogs yet</p>
+                }
+            </div>
+        </div>
+
+        <!-- Right margin (buttons section) -->
+        <div class="col-md-1 d-flex flex-column justify-content-start" style="border-left: 2px solid #ccc; padding-top: 20px;">
+            <img src="/uploads/@Model.ProfilePictureUrl" alt="profile picture" width="200vw">
+            <h1>@Model.Username</h1>
+            <div class="d-flex flex-row" style="width: max-content; gap: 1em;">
+                <a>Following: @Model.FollowingCount</a>
+                <a>Followers: @Model.FollowerCount</a>
+            </div>
+            <hr/>
+            <p>@Model.bio</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .vertical-text {
+        letter-spacing: 2px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .btn {
+        width: 150px;
+        margin-top: 20px;
+    }
+
+    .scrollable-blog-list {
+    }
+
+    .card {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: 0.3s;
+    }
+
+    .card:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-body, .card-title, .card-text, .card-footer {
+        color: black; 
+    }
+
+    .card-link {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .card-link:hover {
+        text-decoration: none;
+    }
+
+    .card-link .card {
+        height: 100%;
+    }
+
+    .card-link:hover .card-body {
+        color: #000;
+    }
+</style>

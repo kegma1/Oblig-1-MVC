@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 public class Post
 {
-    public int Id { get; set; } 
+    public int Id { get; set; }
 
     [Required]
     [MaxLength(50)]
@@ -10,8 +10,11 @@ public class Post
 
     [Required]
     public string Content { get; set; }
-    
+
     [Required]
-    public DateTime CreatedAt { get; set; } 
+    public DateTime CreatedAt { get; set; }
+
     public User? Author { get; set; }
+
+    public List<Comment> Comments { get; set; } = new List<Comment>();
 }

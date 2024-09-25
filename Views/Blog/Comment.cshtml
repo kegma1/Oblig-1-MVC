@@ -1,0 +1,64 @@
+@model Blog
+
+@{
+    ViewData["Title"] = "Leave a Comment";
+    var comments = Model.Posts.SelectMany(p => p.Comments).OrderByDescending(c => c.CreatedAt);
+
+
+}
+
+<div class="container mt-4" style="height: calc(100vh - 150px); overflow-y: auto;">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                @if (!string.IsNullOrEmpty(Model.ProfilePicture))
+                {
+                    <img src="@Model.ProfilePicture" class="card-img-top img-fluid" style="max-height: 200px; object-fit: cover;" alt="Blog Image">
+                }
+                <div class="card-body">
+                    <h1 class="card-title">@Model.Title</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-body">
+                    <h5>Leave a Comment</h5>
+                    <form method="post" action="@Url.Action("SubmitComment", "Blog", new { id = Model.Id })">
+                        <div class="form-group">
+                            <label for="commentContent">Comment</label>
+                            <textarea class="form-control" id="commentContent" name="CommentContent" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-2">Submit Comment</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-8 offset-md-2">
+            <h5>Previous Comments</h5>
+
+            @if (comments.Any())
+            {
+                @foreach (var comment in comments)
+                {
+                    <div class="card mt-3">
+                        <div class="card-body">
+                            <p>@comment.Content</p>
+                            <small class="text-muted">Posted by @comment.User.UserName on @comment.CreatedAt.ToString("MMMM dd, yyyy HH:mm")</small>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <p>No comments yet. Be the first to comment!</p>
+            }
+        </div>
+    </div>
+</div>

@@ -1,7 +1,8 @@
-using oblig1.Data; 
-using oblig1.Models;  
+using oblig1.Data;
+using oblig1.Models;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore; // Add this for Include to work
 
 public class BlogRepository : IBlogRepository
 {
@@ -35,8 +36,13 @@ public class BlogRepository : IBlogRepository
 
     public Blog GetBlogById(int id)
     {
-        return _context.Blogs.Find(id);
+        return _context.Blogs
+            .Include(b => b.Posts)
+                .ThenInclude(p => p.Comments) 
+            .FirstOrDefault(b => b.Id == id);
     }
+
+
 
     public void UpdateBlog(Blog blog)
     {
@@ -44,7 +50,20 @@ public class BlogRepository : IBlogRepository
         _context.SaveChanges();
     }
 
-    public IEnumerable<Blog> GetAllBlogsByAuthor(string authorId) {
+    public IEnumerable<Blog> GetAllBlogsByAuthor(string authorId)
+    {
         return _context.Blogs.Where(b => b.Author.Id == authorId).ToList();
+    }
+
+    // New methods for handling comments
+    public void AddComment(Comment comment)
+    {
+        _context.Comments.Add(comment);
+        _context.SaveChanges();
+    }
+
+    public IEnumerable<Comment> GetCommentsByBlogId(int blogId)
+    {
+        return _context.Comments.Where(c => c.BlogId == blogId).ToList();
     }
 }

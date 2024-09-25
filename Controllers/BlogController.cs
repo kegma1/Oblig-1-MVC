@@ -36,6 +36,44 @@ public class BlogController : Controller
         return View(blog);
     }
 
+    [HttpGet]
+    public IActionResult Comment(int id)
+    {
+        var blog = _blogRepository.GetBlogById(id);
+        if (blog == null)
+        {
+            return NotFound();
+        }
+
+        return View(blog);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> SubmitComment(int id, string CommentContent)
+    {
+        var blog = _blogRepository.GetBlogById(id);
+        if (blog == null)
+        {
+            return NotFound();
+        }
+
+        var user = await _userManager.GetUserAsync(User);
+
+        var comment = new Comment
+        {
+            BlogId = blog.Id,
+            UserId = user.Id,  
+            Content = CommentContent,
+            CreatedAt = DateTime.Now
+        };
+
+        _blogRepository.AddComment(comment);
+
+        return RedirectToAction("Comment", new { id = blog.Id });
+    }
+
+
+
     [Authorize]
     [HttpPost]
     public async Task<IActionResult> CreateBlog(MakeBlogViewModel model)

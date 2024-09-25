@@ -4,5 +4,7 @@ public interface IBlogRepository {
     void AddBlog(Blog blog);
     void UpdateBlog(Blog blog);
     void DeleteBlog(int id);
-    public IEnumerable<Blog> GetAllBlogsByAuthor(string authorId);
+    void AddComment(Comment comment);
+    IEnumerable<Comment> GetCommentsByBlogId(int blogId);
+    IEnumerable<Blog> GetAllBlogsByAuthor(string authorId); 
 }

@@ -6,7 +6,6 @@
 
 <div class="container-fluid">
     <div class="row" style="min-height: calc(100vh - 150px);">
-        <!-- Left margin (Ads section) -->
         <div class="col-md-1 d-flex justify-content-start" style="border-right: 2px solid #ccc; padding-top: 20px;">
             <div class="vertical-text text-start">
                 <span>Ads</span><br />
@@ -16,11 +15,9 @@
             </div>
         </div>
 
-        <!-- Blog posts section -->
         <div class="col-md-10" style="padding-left: 50px;">
             <h2>Blogs</h2>
 
-            <!-- Blog container -->
             <div class="scrollable-blog-list" style="max-height: 80vh; overflow-y: auto; padding-right: 20px;">
                 @if (Model.Blogs != null && Model.Blogs.Any())
                 {
@@ -28,16 +25,15 @@
                         @foreach (var blog in Model.Blogs)
                         {
                             <div class="col">
-                                <!-- Make the entire card clickable -->
                                 <a href="@Url.Action("ViewBlog", "Blog", new { id = blog.Id })" class="card-link">
                                     <div class="card h-100">
                                         @if (!string.IsNullOrEmpty(blog.ProfilePicture))
                                         {
-                                            <img src="@blog.ProfilePicture" class="card-img-top" alt="Blog Image">
+                                            <img src="@blog.ProfilePicture" class="card-img-top img-fluid" style="max-height: 200px; object-fit: cover;" alt="Blog Image">
                                         }
                                         <div class="card-body">
                                             <h5 class="card-title">@blog.Title</h5>
-                                            <p class="card-text">@blog.Description</p> <!-- Updated to correct property -->
+                                            <p class="card-text">@blog.Description</p>
                                         </div>
                                         <div class="card-footer">
                                             <small class="text-muted">Author: @blog.Author?.UserName</small>
@@ -55,7 +51,6 @@
             </div>
         </div>
 
-        <!-- Right margin (buttons section) -->
         <div class="col-md-1 d-flex flex-column justify-content-start" style="border-left: 2px solid #ccc; padding-top: 20px;">
             <button class="btn btn-primary mb-2" onclick="window.location.href='@Url.Action("MakeBlog", "Blog")'">New Blog</button>
             <button class="btn btn-secondary mb-2">Saved Blogs</button>

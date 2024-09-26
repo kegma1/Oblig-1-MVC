@@ -8,11 +8,13 @@ using System.IO;
 public class BlogController : Controller
 {
     private readonly IBlogRepository _blogRepository;
+    private readonly ICommentsRepository _commentsRepository; 
     private readonly UserManager<User> _userManager;
 
-    public BlogController(IBlogRepository blogRepository, UserManager<User> userManager)
+    public BlogController(IBlogRepository blogRepository, ICommentsRepository commentsRepository, UserManager<User> userManager)
     {
         _blogRepository = blogRepository;
+        _commentsRepository = commentsRepository; 
         _userManager = userManager;
     }
 
@@ -45,7 +47,11 @@ public class BlogController : Controller
             return NotFound();
         }
 
-        return View(blog);
+        var comments = _commentsRepository.GetCommentsByBlogId(id)
+                                        .OrderByDescending(c => c.CreatedAt)
+                                        .AsEnumerable(); 
+
+        return View((blog, comments));
     }
 
     [HttpPost]
@@ -67,12 +73,10 @@ public class BlogController : Controller
             CreatedAt = DateTime.Now
         };
 
-        _blogRepository.AddComment(comment);
+        _commentsRepository.AddComment(comment);
 
         return RedirectToAction("Comment", new { id = blog.Id });
     }
-
-
 
     [Authorize]
     [HttpPost]
@@ -94,7 +98,7 @@ public class BlogController : Controller
                 profilePicturePath = "/uploads/" + profilePicFileName;
             }
 
-            // Handling image uploads
+
             var imagePaths = new List<string>();
             if (model.Images != null && model.Images.Count > 0)
             {
@@ -110,13 +114,12 @@ public class BlogController : Controller
                 }
             }
 
-            // Create new blog entry
             var blog = new Blog
             {
                 Title = model.Title,
                 Description = model.Description,
                 Author = user,
-                ProfilePicture = profilePicturePath, // Store the profile picture path
+                ProfilePicture = profilePicturePath, 
                 Posts = new List<Post>(),
             };
 

@@ -1,0 +1,113 @@
+@model FollowListViewModel
+
+@{
+    ViewData["Title"] = "Followers/Following";
+}
+
+<div class="container-fluid">
+    <div class="row" style="min-height: calc(100vh - 150px);">
+        <!-- Left margin (Ads section) -->
+        <div class="col-md-1 d-flex justify-content-start" style="border-right: 2px solid #ccc; padding-top: 20px;">
+            <div class="vertical-text text-start">
+                <span>Ads</span><br />
+                <span>will</span><br />
+                <span>come</span><br />
+                <span>here</span>
+            </div>
+        </div>
+
+        <!-- Followers/Following list section -->
+        <div class="col-md-10" style="padding-left: 50px;">
+            <!-- Display the context info -->
+            <h2>
+                @if (Model.ListType == "followers")
+                {
+                    @:These people are following <strong>@Model.Username</strong>
+                }
+                else if (Model.ListType == "following")
+                {
+                    @:<strong>@Model.Username</strong> is following these accounts
+                }
+            </h2>
+
+
+            <!-- Back button to return to the previous profile -->
+            <button class="btn btn-secondary mb-3" onclick="window.location.href='@Url.Action("PublicProfile", "Account", new { userId = Model.UserId })'">
+                Back to Profile
+            </button>
+
+            <!-- Users container -->
+            <div class="scrollable-user-list" style="max-height: 80vh; overflow-y: auto; padding-right: 20px;">
+                @if (Model.Users.Any())
+                {
+                    <div class="row row-cols-1 row-cols-md-2 g-4">
+                        @foreach (var user in Model.Users)
+                        {
+                            <div class="col">
+                                <a href="@Url.Action("PublicProfile", "Account", new { userId = user.Id })" class="card-link">
+                                    <div class="card h-100">
+                                        <img src="/uploads/@user.ProfilePicture" class="card-img-top" alt="Profile Picture">
+                                        <div class="card-body">
+                                            <h5 class="card-title">@user.UserName</h5>
+                                            <p class="card-text">@user.Bio</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p>No users found</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .vertical-text {
+        letter-spacing: 2px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .btn {
+        width: 150px;
+        margin-top: 20px;
+    }
+
+    .scrollable-blog-list {
+    }
+
+    .card {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: 0.3s;
+    }
+
+    .card:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-body, .card-title, .card-text, .card-footer {
+        color: black; 
+    }
+
+    .card-link {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .card-link:hover {
+        text-decoration: none;
+    }
+
+    .card-link .card {
+        height: 100%;
+    }
+
+    .card-link:hover .card-body {
+        color: #000;
+    }
+</style>

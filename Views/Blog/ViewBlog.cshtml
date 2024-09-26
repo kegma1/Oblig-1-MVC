@@ -22,7 +22,12 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    <p class="text-muted">Author: @Model.Author?.UserName</p>
+                    <p class="text-muted">
+                        Author: 
+                        <a href="@Url.Action("PublicProfile", "Account", new { userId = Model.Author.Id })">
+                            @Model.Author?.UserName
+                        </a>
+                    </p>
                     <p class="text-muted">Posts: @Model.Posts?.Count ?? 0</p>
                 </div>
             </div>

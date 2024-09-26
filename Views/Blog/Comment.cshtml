@@ -1,22 +1,23 @@
-@model Blog
+@model (Blog, IEnumerable<Comment>)
+
 
 @{
+    var blog = Model.Item1;
+    var comments = Model.Item2;
+
     ViewData["Title"] = "Leave a Comment";
-    var comments = Model.Posts.SelectMany(p => p.Comments).OrderByDescending(c => c.CreatedAt);
-
-
 }
 
 <div class="container mt-4" style="height: calc(100vh - 150px); overflow-y: auto;">
     <div class="row">
         <div class="col-md-8 offset-md-2">
             <div class="card">
-                @if (!string.IsNullOrEmpty(Model.ProfilePicture))
+                @if (!string.IsNullOrEmpty(blog.ProfilePicture))
                 {
-                    <img src="@Model.ProfilePicture" class="card-img-top img-fluid" style="max-height: 200px; object-fit: cover;" alt="Blog Image">
+                    <img src="@blog.ProfilePicture" class="card-img-top img-fluid" style="max-height: 200px; object-fit: cover;" alt="Blog Image">
                 }
                 <div class="card-body">
-                    <h1 class="card-title">@Model.Title</h1>
+                    <h1 class="card-title">@blog.Title</h1>
                 </div>
             </div>
         </div>
@@ -27,7 +28,7 @@
             <div class="card">
                 <div class="card-body">
                     <h5>Leave a Comment</h5>
-                    <form method="post" action="@Url.Action("SubmitComment", "Blog", new { id = Model.Id })">
+                    <form method="post" action="@Url.Action("SubmitComment", "Blog", new { id = blog.Id })">
                         <div class="form-group">
                             <label for="commentContent">Comment</label>
                             <textarea class="form-control" id="commentContent" name="CommentContent" rows="3" required></textarea>
@@ -50,7 +51,7 @@
                     <div class="card mt-3">
                         <div class="card-body">
                             <p>@comment.Content</p>
-                            <small class="text-muted">Posted by @comment.User.UserName on @comment.CreatedAt.ToString("MMMM dd, yyyy HH:mm")</small>
+                            <small class="text-muted">Posted by @comment.User?.UserName on @comment.CreatedAt.ToString("MMMM dd, yyyy HH:mm")</small>
                         </div>
                     </div>
                 }
@@ -62,3 +63,50 @@
         </div>
     </div>
 </div>
+
+
+<style>
+    .vertical-text {
+        letter-spacing: 2px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .btn {
+        width: 150px;
+        margin-top: 20px;
+    }
+
+    .scrollable-blog-list {
+    }
+
+    .card {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: 0.3s;
+    }
+
+    .card:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-body, .card-title, .card-text, .card-footer {
+        color: black; 
+    }
+
+    .card-link {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .card-link:hover {
+        text-decoration: none;
+    }
+
+    .card-link .card {
+        height: 100%;
+    }
+
+    .card-link:hover .card-body {
+        color: #000;
+    }
+</style>

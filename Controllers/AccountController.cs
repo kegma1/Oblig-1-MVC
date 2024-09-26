@@ -2,6 +2,8 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
 
 
 namespace oblig1.Controllers
@@ -77,27 +79,36 @@ namespace oblig1.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> PublicProfile(string userId) {
+        public async Task<IActionResult> PublicProfile(string userId)
+        {
+            var user = await _userManager.Users
+                .Include(u => u.Followers)
+                .Include(u => u.Following)
+                .FirstOrDefaultAsync(u => u.Id == userId);
 
-            var user = await _userManager.FindByIdAsync(userId);
-
-            if (user == null) {
+            if (user == null)
+            {
                 return NotFound("User not found");
             }
 
-            var profileViewModel = new PublicProfileViewModel {
+            var profileViewModel = new PublicProfileViewModel
+            {
+                UserId = user.Id,
                 Username = user.UserName,
-                bio = user.Bio,
+                Bio = user.Bio,
                 ProfilePictureUrl = user.ProfilePicture,
-
                 FollowerCount = user.Followers.Count,
                 FollowingCount = user.Following.Count,
-
-                Blogs = _blogRepository.GetAllBlogsByAuthor(userId)
+                Blogs = _blogRepository.GetAllBlogsByAuthor(userId).ToList()
             };
 
             return View(profileViewModel);
         }
+
+
+
+
+
 
 
         [HttpGet]
@@ -156,5 +167,107 @@ namespace oblig1.Controllers
 
             return View(model);
         }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> FollowUser(string userId)
+        {
+            var user = await _userManager.Users
+                .Include(u => u.Following)
+                .FirstOrDefaultAsync(u => u.Id == _userManager.GetUserId(User));
+            var userToFollow = await _userManager.Users
+                .Include(u => u.Followers)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user == null || userToFollow == null || user.Id == userToFollow.Id)
+            {
+                return BadRequest("Invalid follow request.");
+            }
+
+            if (!user.Following.Any(f => f.Id == userToFollow.Id))
+            {
+                user.Following.Add(userToFollow);
+                userToFollow.Followers.Add(user);
+
+                await _userManager.UpdateAsync(user);
+                await _userManager.UpdateAsync(userToFollow);
+            }
+
+            return RedirectToAction("PublicProfile", new { userId = userToFollow.Id });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> UnfollowUser(string userId)
+        {
+            var user = await _userManager.Users
+                .Include(u => u.Following)
+                .FirstOrDefaultAsync(u => u.Id == _userManager.GetUserId(User));
+            var userToUnfollow = await _userManager.Users
+                .Include(u => u.Followers)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user == null || userToUnfollow == null || user.Id == userToUnfollow.Id)
+            {
+                return BadRequest("Invalid unfollow request.");
+            }
+
+            if (user.Following.Any(f => f.Id == userToUnfollow.Id))
+            {
+                user.Following.Remove(userToUnfollow);
+                userToUnfollow.Followers.Remove(user);
+
+                await _userManager.UpdateAsync(user);
+                await _userManager.UpdateAsync(userToUnfollow);
+            }
+
+            return RedirectToAction("PublicProfile", new { userId = userToUnfollow.Id });
+        }
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> FollowList(string userId, string listType)
+        {
+            var user = await _userManager.Users
+                .Include(u => u.Followers)
+                .Include(u => u.Following)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            IEnumerable<User> usersList;
+
+            if (listType == "followers")
+            {
+                usersList = user.Followers;
+            }
+            else if (listType == "following")
+            {
+                usersList = user.Following;
+            }
+            else
+            {
+                return BadRequest("Invalid list type");
+            }
+
+    
+            var model = new FollowListViewModel
+            {
+                Username = user.UserName,
+                UserId = user.Id,
+                ListType = listType,
+                Users = usersList
+            };
+
+            return View("FollowList", model);
+        }
+
+
+
+
     }
 }

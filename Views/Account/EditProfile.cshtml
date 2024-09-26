@@ -1,0 +1,31 @@
+@model EditProfileViewModel
+@{
+    ViewData["Title"] = "Edit " + Model.Username;
+}
+
+<div class="login-container">
+    <div class="login-box">
+        <h2>@Model.Username</h2>
+
+        <form asp-action="EditProfile" asp-controller="Account" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label for="bio">biography</label>
+                <textarea class="form-control" id="bio" name="Bio" rows="5" required>@Model.Bio</textarea>
+            </div>
+
+            <hr>
+            <h2>Current username</h2>
+            <img src="/uploads/@Model.ProfilePictureUrl" alt="Profile Picture" width="200vw">
+
+            <div class="form-group">
+                <label for="newProfilePicture">Change Profile Picture</label>
+                <input type="file" class="form-control-file" id="newProfilePicture" name="NewProfilePicture" />
+            </div>
+            
+
+            <button type="submit" class="btn btn-primary">Update</button>
+        </form>
+    </div>
+</div>

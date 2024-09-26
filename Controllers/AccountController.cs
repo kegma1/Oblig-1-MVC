@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -95,6 +97,64 @@ namespace oblig1.Controllers
             };
 
             return View(profileViewModel);
+        }
+
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> EditProfile() {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null) {
+                return NotFound("User not found");
+            }
+
+            var editProfileViewModel = new EditProfileViewModel {
+                Username = user.UserName,
+                Bio = user.Bio,
+                ProfilePictureUrl = user.ProfilePicture,
+            };
+            
+
+            return View(editProfileViewModel);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> EditProfile(EditProfileViewModel model) {
+            if (ModelState.IsValid) {
+                var user = await _userManager.GetUserAsync(User);
+
+                if (user == null) {
+                    return NotFound();
+                }
+                if (model.NewProfilePicture != null) {
+                    Console.WriteLine("YHALLLLLLLLLLLLLLLLOOOOOWWWOWOWIEDFSA");
+                    var profilePicFileName = Path.GetFileName(model.NewProfilePicture.FileName);
+                    var profilePicFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads", profilePicFileName);
+                    using (var stream = new FileStream(profilePicFilePath, FileMode.Create))
+                    {
+                        await model.NewProfilePicture.CopyToAsync(stream);
+                    }
+                    user.ProfilePicture = profilePicFileName;
+                }
+
+                if (model.Bio != null) {
+                    user.Bio = model.Bio;
+                }
+
+                var result = await _userManager.UpdateAsync(user);
+
+                if (result.Succeeded) {
+                    return RedirectToAction("Index", "Home"); 
+                }
+
+                foreach (var error in result.Errors) {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+
+            return View(model);
         }
     }
 }

@@ -67,7 +67,9 @@
                 <a>Followers: @Model.FollowerCount</a>
             </div>
             @if (Model.Username == User?.Identity?.Name) {
-                <button>Edit profile</button>
+                <a asp-controller="Account" asp-action="EditProfile">
+                    <button>Edit profile</button>
+                </a>
             } else {
                 @if (true) {
                     <button>Follow</button>

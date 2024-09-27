@@ -1,7 +1,4 @@
 using oblig1.Data;
-using oblig1.Models;
-using System.Collections.Generic;
-using System.Linq;
 public class PostRepository : IPostRepository
 {
     private readonly ApplicationDbContext _context;
@@ -42,14 +39,11 @@ public class PostRepository : IPostRepository
         _context.Posts.Update(post);
         _context.SaveChanges();
     }
-
-    // New methods for handling comments on posts
     public void AddComment(Comment comment)
     {
         _context.Comments.Add(comment);
         _context.SaveChanges();
     }
-
     public IEnumerable<Comment> GetCommentsByPostId(int postId)
     {
         return _context.Comments.Where(c => c.PostId == postId).ToList();

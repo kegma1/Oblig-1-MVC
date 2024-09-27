@@ -6,7 +6,6 @@
 
 <div class="container-fluid">
     <div class="row" style="min-height: calc(100vh - 150px);">
-        <!-- Left margin (Ads section) -->
         <div class="col-md-1 d-flex justify-content-start" style="border-right: 2px solid #ccc; padding-top: 20px;">
             <div class="vertical-text text-start">
                 <span>Ads</span><br />
@@ -16,9 +15,7 @@
             </div>
         </div>
 
-        <!-- Followers/Following list section -->
         <div class="col-md-10" style="padding-left: 50px;">
-            <!-- Display the context info -->
             <h2>
                 @if (Model.ListType == "followers")
                 {
@@ -30,13 +27,10 @@
                 }
             </h2>
 
-
-            <!-- Back button to return to the previous profile -->
             <button class="btn btn-secondary mb-3" onclick="window.location.href='@Url.Action("PublicProfile", "Account", new { userId = Model.UserId })'">
                 Back to Profile
             </button>
 
-            <!-- Users container -->
             <div class="scrollable-user-list" style="max-height: 80vh; overflow-y: auto; padding-right: 20px;">
                 @if (Model.Users.Any())
                 {

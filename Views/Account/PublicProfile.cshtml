@@ -6,10 +6,8 @@
     var user = await UserManager.GetUserAsync(User);
 }
 
-
 <div class="container-fluid">
     <div class="row" style="min-height: calc(100vh - 150px);">
-        <!-- Left margin (Ads section) -->
         <div class="col-md-1 d-flex justify-content-start" style="border-right: 2px solid #ccc; padding-top: 20px;">
             <div class="vertical-text text-start">
                 <span>Ads</span><br />
@@ -31,7 +29,6 @@
                         @foreach (var blog in Model.Blogs)
                         {
                             <div class="col">
-                                <!-- Make the entire card clickable -->
                                 <a href="@Url.Action("ViewBlog", "Blog", new { id = blog.Id })" class="card-link">
                                     <div class="card h-100">
                                         @if (!string.IsNullOrEmpty(blog.ProfilePicture))
@@ -40,7 +37,7 @@
                                         }
                                         <div class="card-body">
                                             <h5 class="card-title">@blog.Title</h5>
-                                            <p class="card-text">@blog.Description</p> <!-- Updated to correct property -->
+                                            <p class="card-text">@blog.Description</p> 
                                         </div>
                                         <div class="card-footer">
                                             <small class="text-muted">Author: @blog.Author?.UserName</small>
@@ -58,7 +55,6 @@
             </div>
         </div>
 
-        <!-- Right margin (buttons section) -->
         <div class="col-md-1 d-flex flex-column justify-content-start" style="border-left: 2px solid #ccc; padding-top: 20px;">
             <img src="/uploads/@Model.ProfilePictureUrl" alt="profile picture" width="200vw">
             <h1>@Model.Username</h1>
@@ -80,14 +76,14 @@
                 @if (isFollowing)
                 {
                     <form asp-action="UnfollowUser" asp-controller="Account" method="post">
-                        <input type="hidden" name="userId" value="@Model.UserId" /> <!-- Corrected here -->
+                        <input type="hidden" name="userId" value="@Model.UserId" /> 
                         <button type="submit" class="btn btn-secondary">Unfollow</button>
                     </form>
                 }
                 else
                 {
                     <form asp-action="FollowUser" asp-controller="Account" method="post">
-                        <input type="hidden" name="userId" value="@Model.UserId" /> <!-- Corrected here -->
+                        <input type="hidden" name="userId" value="@Model.UserId" />
                         <button type="submit" class="btn btn-primary">Follow</button>
                     </form>
                 }

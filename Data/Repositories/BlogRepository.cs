@@ -1,7 +1,4 @@
 using oblig1.Data;
-using oblig1.Models;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.EntityFrameworkCore; 
 
 public class BlogRepository : IBlogRepository
@@ -58,13 +55,6 @@ public class BlogRepository : IBlogRepository
     public IEnumerable<Blog> GetAllBlogsByAuthor(string authorId)
     {
         return _context.Blogs.Where(b => b.Author.Id == authorId).ToList();
-    }
-
-    
-    public void AddComment(Comment comment)
-    {
-        _context.Comments.Add(comment);
-        _context.SaveChanges();
     }
 
     public IEnumerable<Comment> GetCommentsByBlogId(int blogId)

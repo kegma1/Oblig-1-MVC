@@ -1,8 +1,6 @@
 ﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using oblig1.Models;
-using oblig1.Data;
 
 namespace oblig1.Controllers
 {

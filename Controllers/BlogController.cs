@@ -1,9 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity; 
 using Microsoft.AspNetCore.Mvc;
-using oblig1.Data; 
-using oblig1.Models;
-using System.IO;
 
 public class BlogController : Controller
 {

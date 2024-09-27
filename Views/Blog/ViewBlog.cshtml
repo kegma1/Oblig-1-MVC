@@ -14,7 +14,7 @@
                 }
                 <div class="card-body">
                     <h1 class="card-title">@Model.Title</h1>
-                    <p class="card-text" style="white-space: pre-wrap;">@Model.Description</p> <!-- Using white-space: pre-wrap to preserve line breaks -->
+                    <p class="card-text" style="white-space: pre-wrap;">@Model.Description</p>
                     <div class="d-flex justify-content-between mt-4">
                         <button class="btn btn-primary" onclick="window.location.href='@Url.Action("Comment", "Blog", new { id = Model.Id })'">Comment</button>
                         <button class="btn btn-secondary">Like</button>

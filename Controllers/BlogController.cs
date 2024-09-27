@@ -6,13 +6,15 @@ public class BlogController : Controller
 {
     private readonly IBlogRepository _blogRepository;
     private readonly ICommentsRepository _commentsRepository; 
+    private readonly IPostRepository _postRepository;
     private readonly UserManager<User> _userManager;
 
-    public BlogController(IBlogRepository blogRepository, ICommentsRepository commentsRepository, UserManager<User> userManager)
+    public BlogController(IBlogRepository blogRepository, ICommentsRepository commentsRepository, IPostRepository postRepository,UserManager<User> userManager)
     {
         _blogRepository = blogRepository;
         _commentsRepository = commentsRepository; 
         _userManager = userManager;
+        _postRepository = postRepository;
     }
 
     [Authorize]
@@ -32,7 +34,45 @@ public class BlogController : Controller
             return NotFound(); 
         }
 
-        return View(blog);
+        var viewModel = new ViewBlogViewModel {
+            Blog = blog,
+            MakePostViewModel = new MakePostViewModel()
+        };
+
+        return View(viewModel);
+    }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> MakePost(ViewBlogViewModel model) {
+
+        string? optionalImagePath = null;
+        if (model.MakePostViewModel.Image != null)
+        {
+            var profilePicFileName = Path.GetFileName(model.MakePostViewModel.Image.FileName);
+            var profilePicFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads", profilePicFileName);
+            using (var stream = new FileStream(profilePicFilePath, FileMode.Create))
+            {
+                await model.MakePostViewModel.Image.CopyToAsync(stream);
+            }
+            optionalImagePath = "/uploads/" + profilePicFileName;
+        }
+
+        var blog = _blogRepository.GetBlogById(model.MakePostViewModel.blogId);
+
+        var newPost = new Post {
+            Title = model.MakePostViewModel.Title,
+            Content = model.MakePostViewModel.Content,
+            CreatedAt = DateTime.Now,
+            Author = blog.Author,
+            blog = blog,
+            Image = optionalImagePath
+        };
+
+        _postRepository.AddPost(newPost);
+
+        return RedirectToAction("viewBlog", "Blog", new { id = blog.Id });
+      
     }
 
     [HttpGet]
@@ -126,4 +166,61 @@ public class BlogController : Controller
 
         return View("MakeBlog", model);
     }
+
+     [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> EditBlog(int blogId) {
+            var blog = _blogRepository.GetBlogById(blogId);
+
+            if (blog == null) {
+                return NotFound("User not found");
+            }
+
+            var editBlogViewModel = new EditBlogViewModel {
+                Title = blog.Title,
+                Description = blog.Description,
+                BannerUrl = blog.ProfilePicture,
+                blogId = blog.Id,
+            };
+            
+
+            return View(editBlogViewModel);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> EditBlog(EditBlogViewModel model) {
+            if (ModelState.IsValid) {
+                var blog = _blogRepository.GetBlogById(model.blogId);
+
+
+                if (blog == null) {
+                    return NotFound();
+                }
+                if (model.NewBanner != null) {
+                    
+                    var profilePicFileName = Path.GetFileName(model.NewBanner.FileName);
+                    var profilePicFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads", profilePicFileName);
+                    using (var stream = new FileStream(profilePicFilePath, FileMode.Create))
+                    {
+                        await model.NewBanner.CopyToAsync(stream);
+                    }
+                    blog.ProfilePicture = "/uploads/" + profilePicFileName;
+                }
+
+                if (model.Description != null) {
+                    blog.Description = model.Description;
+                }
+
+                if (model.Title != null) {
+                    blog.Title = model.Title;
+                }
+
+                _blogRepository.UpdateBlog(blog);
+
+                return RedirectToAction("ViewBlog", "Blog",  new { id = model.blogId });
+            }
+
+            return View(model);
+        }
 }

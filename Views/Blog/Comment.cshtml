@@ -1,23 +1,23 @@
-@model (Blog, IEnumerable<Comment>)
-
+@model CommentViewModel
 
 @{
-    var blog = Model.Item1;
-    var comments = Model.Item2;
+    var post = Model.Post;
+    var comments = Model.Comments;
 
-    ViewData["Title"] = "Leave a Comment";
+    ViewData["Title"] = "Leave a Comment on Post";
 }
 
 <div class="container mt-4" style="height: calc(100vh - 150px); overflow-y: auto;">
     <div class="row">
         <div class="col-md-8 offset-md-2">
             <div class="card">
-                @if (!string.IsNullOrEmpty(blog.ProfilePicture))
-                {
-                    <img src="@blog.ProfilePicture" class="card-img-top img-fluid" style="max-height: 200px; object-fit: cover;" alt="Blog Image">
-                }
                 <div class="card-body">
-                    <h1 class="card-title">@blog.Title</h1>
+                    <h1 class="card-title">@post.Title</h1>
+                    <p>@post.Content</p>
+                    @if (!string.IsNullOrEmpty(post.Image))
+                    {
+                        <img src="@post.Image" class="img-fluid" alt="Post Image">
+                    }
                 </div>
             </div>
         </div>
@@ -28,10 +28,10 @@
             <div class="card">
                 <div class="card-body">
                     <h5>Leave a Comment</h5>
-                    <form method="post" action="@Url.Action("SubmitComment", "Blog", new { id = blog.Id })">
+                    <form method="post" action="@Url.Action("SubmitComment", "Blog", new { postId = post.Id })">
                         <div class="form-group">
                             <label for="commentContent">Comment</label>
-                            <textarea class="form-control" id="commentContent" name="CommentContent" rows="3" required></textarea>
+                            <textarea class="form-control" id="commentContent" name="commentContent" rows="3" required></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary mt-2">Submit Comment</button>
                     </form>
@@ -63,6 +63,7 @@
         </div>
     </div>
 </div>
+
 
 
 <style>

@@ -16,14 +16,6 @@ public class CommentsRepository : ICommentsRepository
         _context.SaveChanges();
     }
 
-    public IEnumerable<Comment> GetCommentsByBlogId(int blogId)
-    {
-        return _context.Comments
-            .Include(c => c.User)
-            .Where(c => c.BlogId == blogId)
-            .ToList();
-    }
-
     public IEnumerable<Comment> GetCommentsByPostId(int postId)
     {
         return _context.Comments

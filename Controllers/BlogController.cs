@@ -75,27 +75,11 @@ public class BlogController : Controller
       
     }
 
-    [HttpGet]
-    public IActionResult Comment(int id)
-    {
-        var blog = _blogRepository.GetBlogById(id);
-        if (blog == null)
-        {
-            return NotFound();
-        }
-
-        var comments = _commentsRepository.GetCommentsByBlogId(id)
-                                        .OrderByDescending(c => c.CreatedAt)
-                                        .AsEnumerable(); 
-
-        return View((blog, comments));
-    }
-
     [HttpPost]
-    public async Task<IActionResult> SubmitComment(int id, string CommentContent)
+    public async Task<IActionResult> SubmitComment(int postId, string commentContent)
     {
-        var blog = _blogRepository.GetBlogById(id);
-        if (blog == null)
+        var post = _postRepository.GetPostById(postId);
+        if (post == null)
         {
             return NotFound();
         }
@@ -104,16 +88,18 @@ public class BlogController : Controller
 
         var comment = new Comment
         {
-            BlogId = blog.Id,
-            UserId = user.Id,  
-            Content = CommentContent,
+            PostId = post.Id,
+            UserId = user.Id,
+            Content = commentContent,
             CreatedAt = DateTime.Now
         };
 
         _commentsRepository.AddComment(comment);
 
-        return RedirectToAction("Comment", new { id = blog.Id });
+        return RedirectToAction("CommentOnPost", new { postId = post.Id });
     }
+
+
 
     [Authorize]
     [HttpPost]
@@ -222,5 +208,26 @@ public class BlogController : Controller
         }
 
         return View(model);
+    }
+    [HttpGet]
+    public IActionResult CommentOnPost(int postId)
+    {
+        var post = _postRepository.GetPostById(postId);
+        if (post == null)
+        {
+            return NotFound();
+        }
+
+        var comments = _commentsRepository.GetCommentsByPostId(postId)
+                                        .OrderByDescending(c => c.CreatedAt)
+                                        .AsEnumerable();
+
+        var model = new CommentViewModel 
+        {
+            Post = post,
+            Comments = comments
+        };
+
+        return View("Comment", model); 
     }
 }

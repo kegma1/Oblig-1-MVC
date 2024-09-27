@@ -57,12 +57,4 @@ public class BlogRepository : IBlogRepository
         return _context.Blogs.Where(b => b.Author.Id == authorId).ToList();
     }
 
-    public IEnumerable<Comment> GetCommentsByBlogId(int blogId)
-    {
-        return _context.Comments
-            .Include(c => c.User) 
-            .Where(c => c.BlogId == blogId)
-            .ToList();
-    }
-
 }

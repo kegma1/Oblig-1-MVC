@@ -21,9 +21,6 @@
                         @if (Model.Blog.Author?.Id == user?.Id) {
                             <button class="btn btn-primary" onclick="window.location.href='@Url.Action("EditBlog", "Blog", new { blogId = Model.Blog.Id })'">Edit blog</button>
                         }
-                        <button class="btn btn-primary" onclick="window.location.href='@Url.Action("Comment", "Blog", new { id = Model.Blog.Id })'">Comment</button>
-                        <button class="btn btn-secondary">Like</button>
-                        <button class="btn btn-secondary">Share</button>
                     </div>
                 </div>
                 <div class="card-footer">
@@ -33,7 +30,7 @@
                             @Model.Blog.Author?.UserName
                         </a>
                     </p>
-                    <p class="text-muted">Posts: @Model.Blog.Posts?.Count ?? 0</p>
+                    <p class="text-muted">Posts: @Model.Blog.Posts?.Count</p>
                 </div>
                 @if (Model.Blog.Author?.Id == user?.Id) {
                     <div class="card-footer">
@@ -68,18 +65,23 @@
             </div>
             @foreach (var post in Model.Blog.Posts)
             {
-                <div class="card  mb-3" style="background-color: #f8f9fa; color: #333;">
+                <div class="card mb-3" style="background-color: #f8f9fa; color: #333;">
                     <div class="card-body">
-                        <h1 class="card-title">@post.Title</h1>
-                        <p class="card-text">@post.Content</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h1 class="card-title" style="flex-grow: 1;">@post.Title</h1>
+                
+                            @if (!string.IsNullOrEmpty(post.Image))
+                            {
+                                <img src="@post.Image" alt="image" class="post-image img-fluid" style="max-width: 200px; max-height: 150px; margin-left: 10px;">
+                            }
+                        </div>
 
-                        @if (!string.IsNullOrEmpty(post.Image)) {
-                            <img src="@post.Image" alt="image">
-                        }
+                        <p class="card-text">@post.Content</p>
                     </div>
                     <div class="card-footer">
                         <p class="text-muted">@post.CreatedAt</p>
                         <p class="text-muted">@post.Author.UserName</p>
+                        <button class="btn btn-primary" onclick="window.location.href='@Url.Action("CommentOnPost", "Blog", new { postId = post.Id })'">Comment</button>
                     </div>
                 </div>
             }

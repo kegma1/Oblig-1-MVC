@@ -32,6 +32,14 @@ namespace oblig1.Data
                         .WithMany()
                         .HasForeignKey("FollowingId")
                         .OnDelete(DeleteBehavior.Restrict));
+
+            modelBuilder.Entity<Comment>()
+                .HasOne(c => c.Post)
+                .WithMany(p => p.Comments)
+                .HasForeignKey(c => c.PostId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
+
 }

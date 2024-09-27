@@ -78,3 +78,13 @@ h2 {
   height: auto; 
 }
 
+.btn-danger {
+  background-color: #e74c3c;
+  border-color: #e74c3c;
+  color: #ffffff;
+}
+
+.btn-danger:hover {
+  background-color: #c0392b;
+  border-color: #c0392b;
+}

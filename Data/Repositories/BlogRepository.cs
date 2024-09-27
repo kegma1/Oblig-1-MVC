@@ -18,13 +18,23 @@ public class BlogRepository : IBlogRepository
 
     public void DeleteBlog(int id)
     {
-        var blog = _context.Blogs.Find(id);
+        var blog = _context.Blogs
+            .Include(b => b.Posts)
+                .ThenInclude(p => p.Comments)
+            .FirstOrDefault(b => b.Id == id);
+
         if (blog != null)
         {
+            foreach (var post in blog.Posts)
+            {
+                _context.Comments.RemoveRange(post.Comments);
+            }
+            _context.Posts.RemoveRange(blog.Posts);
             _context.Blogs.Remove(blog);
             _context.SaveChanges();
         }
     }
+
 
     public IEnumerable<Blog> GetAllBlogs()
 {

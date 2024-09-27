@@ -230,4 +230,43 @@ public class BlogController : Controller
 
         return View("Comment", model); 
     }
+    [HttpPost]
+    [Authorize]
+    public IActionResult DeletePost(int postId)
+    {
+        var post = _postRepository.GetPostById(postId);
+        if (post == null)
+        {
+            return NotFound();
+        }
+
+        if (post.Author.Id != _userManager.GetUserId(User))
+        {
+            return Forbid();
+        }
+
+        _postRepository.DeletePost(postId);
+        return RedirectToAction("ViewBlog", new { id = post.blog.Id });
+    }
+
+    [HttpPost]
+    [Authorize]
+    public IActionResult DeleteBlog(int blogId)
+    {
+        var blog = _blogRepository.GetBlogById(blogId);
+        if (blog == null)
+        {
+            return NotFound();
+        }
+
+        if (blog.Author.Id != _userManager.GetUserId(User))
+        {
+            return Forbid();
+        }
+
+        _blogRepository.DeleteBlog(blogId);
+        return RedirectToAction("Index", "Home");
+    }
+
 }
+

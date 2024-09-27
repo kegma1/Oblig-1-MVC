@@ -105,11 +105,6 @@ namespace oblig1.Controllers
         }
 
 
-
-
-
-
-
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> EditProfile() {
@@ -139,7 +134,6 @@ namespace oblig1.Controllers
                     return NotFound();
                 }
                 if (model.NewProfilePicture != null) {
-                    Console.WriteLine("YHALLLLLLLLLLLLLLLLOOOOOWWWOWOWIEDFSA");
                     var profilePicFileName = Path.GetFileName(model.NewProfilePicture.FileName);
                     var profilePicFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads", profilePicFileName);
                     using (var stream = new FileStream(profilePicFilePath, FileMode.Create))

@@ -167,60 +167,60 @@ public class BlogController : Controller
         return View("MakeBlog", model);
     }
 
-     [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> EditBlog(int blogId) {
-            var blog = _blogRepository.GetBlogById(blogId);
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> EditBlog(int blogId) {
+        var blog = _blogRepository.GetBlogById(blogId);
+
+        if (blog == null) {
+            return NotFound("User not found");
+        }
+
+        var editBlogViewModel = new EditBlogViewModel {
+            Title = blog.Title,
+            Description = blog.Description,
+            BannerUrl = blog.ProfilePicture,
+            blogId = blog.Id,
+        };
+        
+
+        return View(editBlogViewModel);
+    }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> EditBlog(EditBlogViewModel model) {
+        if (ModelState.IsValid) {
+            var blog = _blogRepository.GetBlogById(model.blogId);
+
 
             if (blog == null) {
-                return NotFound("User not found");
+                return NotFound();
+            }
+            if (model.NewBanner != null) {
+                
+                var profilePicFileName = Path.GetFileName(model.NewBanner.FileName);
+                var profilePicFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads", profilePicFileName);
+                using (var stream = new FileStream(profilePicFilePath, FileMode.Create))
+                {
+                    await model.NewBanner.CopyToAsync(stream);
+                }
+                blog.ProfilePicture = "/uploads/" + profilePicFileName;
             }
 
-            var editBlogViewModel = new EditBlogViewModel {
-                Title = blog.Title,
-                Description = blog.Description,
-                BannerUrl = blog.ProfilePicture,
-                blogId = blog.Id,
-            };
-            
-
-            return View(editBlogViewModel);
-        }
-
-        [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> EditBlog(EditBlogViewModel model) {
-            if (ModelState.IsValid) {
-                var blog = _blogRepository.GetBlogById(model.blogId);
-
-
-                if (blog == null) {
-                    return NotFound();
-                }
-                if (model.NewBanner != null) {
-                    
-                    var profilePicFileName = Path.GetFileName(model.NewBanner.FileName);
-                    var profilePicFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads", profilePicFileName);
-                    using (var stream = new FileStream(profilePicFilePath, FileMode.Create))
-                    {
-                        await model.NewBanner.CopyToAsync(stream);
-                    }
-                    blog.ProfilePicture = "/uploads/" + profilePicFileName;
-                }
-
-                if (model.Description != null) {
-                    blog.Description = model.Description;
-                }
-
-                if (model.Title != null) {
-                    blog.Title = model.Title;
-                }
-
-                _blogRepository.UpdateBlog(blog);
-
-                return RedirectToAction("ViewBlog", "Blog",  new { id = model.blogId });
+            if (model.Description != null) {
+                blog.Description = model.Description;
             }
 
-            return View(model);
+            if (model.Title != null) {
+                blog.Title = model.Title;
+            }
+
+            _blogRepository.UpdateBlog(blog);
+
+            return RedirectToAction("ViewBlog", "Blog",  new { id = model.blogId });
         }
+
+        return View(model);
+    }
 }

@@ -9,7 +9,7 @@
 <div class="container" style="height: calc(100vh - 150px); overflow-y: auto;">
     <div class="row">
         <div class="col-md-8 offset-md-2">
-            <div class="card" style="background-color: #f8f9fa; color: #333;">
+            <div class="card mb-3" style="background-color: #f8f9fa; color: #333;">
                 @if (!string.IsNullOrEmpty(Model.Blog.ProfilePicture))
                 {
                     <img src="@Model.Blog.ProfilePicture" class="card-img-top img-fluid" style="max-height: 300px; object-fit: cover;" alt="Blog Image">
@@ -66,6 +66,23 @@
                     </div>
                 }
             </div>
+            @foreach (var post in Model.Blog.Posts)
+            {
+                <div class="card  mb-3" style="background-color: #f8f9fa; color: #333;">
+                    <div class="card-body">
+                        <h1 class="card-title">@post.Title</h1>
+                        <p class="card-text">@post.Content</p>
+
+                        @if (!string.IsNullOrEmpty(post.Image)) {
+                            <img src="@post.Image" alt="image">
+                        }
+                    </div>
+                    <div class="card-footer">
+                        <p class="text-muted">@post.CreatedAt</p>
+                        <p class="text-muted">@post.Author.UserName</p>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 </div>

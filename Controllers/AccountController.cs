@@ -53,22 +53,25 @@ namespace oblig1.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null) {
-            if (ModelState.IsValid) {
+        public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
+        {
+            if (ModelState.IsValid)
+            {
                 var res = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, lockoutOnFailure: false);
-                
-                if (res.Succeeded) {
-                    if (Url.IsLocalUrl(returnUrl)) {
+
+                if (res.Succeeded)
+                {
+                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                    {
                         return Redirect(returnUrl);
                     }
                     return RedirectToAction("Index", "Home");
                 }
-
                 ModelState.AddModelError(string.Empty, "Invalid login");
-                
             }
             return View(model);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -78,6 +81,7 @@ namespace oblig1.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> PublicProfile(string userId)
         {
             var user = await _userManager.Users
@@ -103,12 +107,6 @@ namespace oblig1.Controllers
 
             return View(profileViewModel);
         }
-
-
-
-
-
-
 
         [HttpGet]
         [Authorize]
@@ -223,9 +221,8 @@ namespace oblig1.Controllers
             return RedirectToAction("PublicProfile", new { userId = userToUnfollow.Id });
         }
 
-
-
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> FollowList(string userId, string listType)
         {
             var user = await _userManager.Users
@@ -253,7 +250,6 @@ namespace oblig1.Controllers
                 return BadRequest("Invalid list type");
             }
 
-    
             var model = new FollowListViewModel
             {
                 Username = user.UserName,
@@ -261,12 +257,8 @@ namespace oblig1.Controllers
                 ListType = listType,
                 Users = usersList
             };
-
             return View("FollowList", model);
         }
-
-
-
 
     }
 }

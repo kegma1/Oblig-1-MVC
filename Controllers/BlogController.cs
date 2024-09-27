@@ -25,6 +25,7 @@ public class BlogController : Controller
     }
 
     [HttpGet]
+    [Authorize]
     public IActionResult ViewBlog(int id)
     {
         var blog = _blogRepository.GetBlogById(id);
@@ -76,6 +77,7 @@ public class BlogController : Controller
     }
 
     [HttpPost]
+    [Authorize]
     public async Task<IActionResult> SubmitComment(int postId, string commentContent)
     {
         var post = _postRepository.GetPostById(postId);
@@ -210,6 +212,7 @@ public class BlogController : Controller
         return View(model);
     }
     [HttpGet]
+    [Authorize]
     public IActionResult CommentOnPost(int postId)
     {
         var post = _postRepository.GetPostById(postId);
